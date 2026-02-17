@@ -1,0 +1,79 @@
+﻿@using System.Text.Json
+@using MyAmazonstore3.Models
+@{
+    var categories = ViewData["Categories"] as List<Categorie>;
+    int? selectedCategoryId = ViewData["SelectedCategoryId"] as int?;
+    var search = ViewData["Search"] as string;
+    //on recupere le cookie utilisateur s'il existe
+    // Récupérer le cookie utilisateur
+    var userCookie = Context.Request.Cookies["UserCookie"];
+    JsonElement user = default;
+    bool isUserConnected = false;
+
+    if (!string.IsNullOrEmpty(userCookie))
+    {
+        user = JsonSerializer.Deserialize<JsonElement>(userCookie);
+        isUserConnected = true;
+    }
+}
+
+<header class="main-header">
+    <div class="header-container">
+
+        <div class="logo">
+            <a asp-page="/Acceuil/Acceuil">TimeSpot</a>
+        </div>
+        <div id="search">
+        <form method="get">
+            <div class="search-bar">
+                <input type="text" name="Search" value="@search"
+                       placeholder="Rechercher des produits..." />
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+        </div>
+        <div class="auth-buttons">
+            <a asp-page="/Acceuil/Panier" class="link2">
+                <i class="fa-solid fa-cart-shopping"></i> Mon panier
+            </a>
+            <a asp-page="/Chat/Chat" class="link2">
+                <i class="fa-solid fa-comments"></i> Chat
+            </a>
+            @if (isUserConnected)
+            {
+                <span class="link1">Bonjour @user.GetProperty("Nom").GetString()</span>
+                <a asp-page="/User/Deconnexion" class="link2">Déconnexion</a>
+               
+            }
+            else
+            {
+                <a asp-page="/User/auth" class="link1">Se connecter</a>
+                <a asp-page="/User/register" class="link2">S’inscrire</a>
+            }
+
+        </div>
+    </div>
+
+    <div class="categories-scroller">
+        @foreach (var cat in categories)
+        {
+            <a href="/Acceuil/Acceuil?SelectedCategoryId=@cat.CategorieId"
+               class="category-link @(selectedCategoryId == cat.CategorieId ? "active" : "")">
+                @cat.Nom
+            </a>
+        }
+    </div>
+</header>
+<div class="auth-buttons">
+@if (isUserConnected)
+{
+    @if (user.GetProperty("Role").GetString() == "magasinier")
+    {
+        <a asp-page="/ProduitGestion/Index" class="link2">GestionProduit</a>
+        <a asp-page="/CategorieGestion/Index" class="link2">GestionCategorie</a>
+    }
+}
+</div>
+

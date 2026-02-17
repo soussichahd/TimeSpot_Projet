@@ -1,0 +1,100 @@
+﻿@page
+@model MyAmazonstore3.Pages.User.registerModel
+@{
+    ViewData["Title"] = "Inscription";
+}
+
+<div class="register-wrapper">
+    <div class="register-container">
+        <div class="register-header">
+            <div class="register-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <line x1="20" y1="8" x2="20" y2="14"></line>
+                    <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+            </div>
+            <h2 class="register-title">Inscription</h2>
+            <p class="register-subtitle">Créez votre compte gratuitement</p>
+        </div>
+
+        <form method="post" class="register-form">
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="label-icon">👤</span>
+                    Nom complet
+                </label>
+                <input type="text" asp-for="Input.Nom" class="form-input" placeholder="Jean Dupont" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="label-icon">📧</span>
+                    Email
+                </label>
+                <input type="email" asp-for="Input.Email" class="form-input" placeholder="exemple@email.com" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="label-icon">🔒</span>
+                    Mot de passe
+                </label>
+                <input type="password" asp-for="Input.Password" class="form-input" placeholder="••••••••" required />
+                <span class="form-hint">Au moins 8 caractères recommandés</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="label-icon">📱</span>
+                    Téléphone
+                </label>
+                <input type="tel" asp-for="Input.Tel" class="form-input" placeholder="+212 6XX XX XX XX" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="label-icon">🎭</span>
+                    Rôle
+                </label>
+                <select asp-for="Input.Role" class="form-select">
+                    <option value="user">Utilisateur</option>
+                    <option value="magasinier">Magasinier</option>
+                </select>
+            </div>
+
+            <div class="form-terms">
+                <label class="checkbox-label">
+                    <input type="checkbox" class="form-checkbox" required />
+                    <span class="checkbox-text">J'accepte les <a href="/terms" class="terms-link">conditions d'utilisation</a></span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-register">
+                    <span class="btn-text">Créer mon compte</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="error-alert">
+                    <div class="error-icon">✕</div>
+                    <div class="error-content">
+                        <p class="error-title">Erreur d'inscription</p>
+                        <p class="error-text">@Model.ErrorMessage</p>
+                    </div>
+                </div>
+            }
+        </form>
+
+        <div class="register-footer">
+            <div class="divider">
+                <span class="divider-text">ou</span>
+            </div>
+            <p class="footer-text">Vous avez déjà un compte ? <a href="/User/auth" class="signin-link">Se connecter</a></p>
+        </div>
+    </div>
+</div>

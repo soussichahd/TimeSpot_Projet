@@ -1,0 +1,40 @@
+﻿@page "{id:int}"
+@model MyAmazonstore3.Pages.Acceuil.DetailProduitModel
+@{
+
+}
+@await Component.InvokeAsync("Header")
+<div class="detail-wrapper">
+   
+    <div class="product-showcase">
+        <div class="showcase-image">
+            <img src="@(string.IsNullOrEmpty(Model.Produit.ImageUrl)
+                                                  ? "https://via.placeholder.com/400x350?text=" + Model.Produit.Nom
+                                                  : Model.Produit.ImageUrl)"
+                 alt="@Model.Produit.Nom" />
+        </div>
+        <div class="showcase-details">
+            <h1>@Model.Produit.Nom</h1>
+            @if (Model.Produit.Categorie != null)
+            {
+                <p class="tag-category">
+                    <i class="fas fa-tag"></i> @Model.Produit.Categorie.Nom
+                </p>
+            }
+            <p class="text-description">
+                @Model.Produit.Description
+            </p>
+            <div class="display-price">
+                <strong>Prix :</strong>
+                <span>$@Model.Produit.Prix.ToString("N2")</span>
+            </div>
+            <form method="post" asp-page-handler="AjouterAuPanier">
+                <input type="hidden" name="produitId" value="@Model.Produit.ProduitId" />
+                <input type="hidden" name="quantite" value="1" />
+                <button type="submit" class="action-button" style="width: 100%;">
+                    <i class="fas fa-cart-plus"></i> Ajouter au panier
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

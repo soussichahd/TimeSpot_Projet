@@ -1,0 +1,69 @@
+﻿@page
+@model MyAmazonstore3.Pages.Acceuil.PanierModel
+@{
+    ViewData["Title"] = "Mon Panier";
+}
+@await Component.InvokeAsync("Header")
+
+
+
+<div class="container mt-4">
+    <h1 class="mb-4">Mon Panier</h1>
+
+    @if (!Model.Panier.Any())
+    {
+        <div class="alert alert-info">
+            Votre panier est vide. <a asp-page="/Acceuil/Acceuil">Voir les produits</a>
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Produit</th>
+                    <th>Prix Unitaire</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var produit in Model.ProduitsPanier)
+                {
+                    var quantite = Model.Panier[produit.ProduitId];
+                    <tr>
+                        <td>
+                            <img src="@(string.IsNullOrEmpty(produit.ImageUrl) ? "https://via.placeholder.com/250x200?text=" + Uri.EscapeDataString(produit.Nom) : produit.ImageUrl)"
+                                 alt="@produit.Nom"
+                                 class="product-image" style="height:150px ; width:200PX">
+                        </td>
+                        <td>@produit.Nom</td>
+                        <td>@produit.Prix.ToString("C")</td>
+                        <td>
+                            <form method="post" asp-page-handler="ModifierQuantite" class="d-flex">
+                                <input type="hidden" name="produitId" value="@produit.ProduitId" />
+                                <input type="number" name="quantite" value="@quantite" min="1" max="@produit.QtStock" class="form-control me-2" style="width:80px;">
+                                <button type="submit" class="btn btn-sm btn-primary">Modifier</button>
+                            </form>
+                        </td>
+                        <td>@(produit.Prix* quantite)</td>
+                        <td>
+                            <form method="post" asp-page-handler="SupprimerProduit">
+                                <input type="hidden" name="produitId" value="@produit.ProduitId" />
+                                <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end mt-4">
+            <h4>Total du panier : <strong>@Model.TotalPanier</strong></h4>
+        </div>
+
+        
+    }
+</div>

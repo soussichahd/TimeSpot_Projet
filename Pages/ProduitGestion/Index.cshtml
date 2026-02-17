@@ -1,0 +1,158 @@
+﻿
+
+@page
+@model MyAmazonstore3.Pages.ProduitGestion.IndexModel
+@{
+    ViewData["Title"] = "Gestion des Produits";
+}
+@await Component.InvokeAsync("Header")
+<div class="container-fluid py-4">
+    <!-- En-tête -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">📦 Gestion des Produits</h1>
+            <p class="text-muted">Liste complète de vos produits</p>
+        </div>
+        <a asp-page="Create" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle"></i> Créer un nouveau produit
+        </a>
+    </div>
+
+    <!-- Statistiques (optionnel) -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Total Produits</h6>
+                    <h3 class="mb-0">@Model.Produit.Count</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">En Stock</h6>
+                    <h3 class="mb-0 text-success">@Model.Produit.Count(p => p.QtStock > 0)</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Rupture</h6>
+                    <h3 class="mb-0 text-danger">@Model.Produit.Count(p => p.QtStock == 0)</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Valeur Stock</h6>
+                    <h3 class="mb-0">@Model.Produit.Sum(p => p.Prix * p.QtStock).ToString("C")</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des produits -->
+    <div class="card table-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table2">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>@Html.DisplayNameFor(model => model.Produit[0].Nom)</th>
+                            <th>@Html.DisplayNameFor(model => model.Produit[0].Prix)</th>
+                            <th>@Html.DisplayNameFor(model => model.Produit[0].Description)</th>
+                            <th class="text-center">Stock</th>
+                            <th>@Html.DisplayNameFor(model => model.Produit[0].Categorie)</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Produit)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" style="height:150PX; width:130PX" alt="@item.Nom" class="product-thumb" />
+                                    }
+                                    else
+                                    {
+                                        <div class="product-thumb-placeholder">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <strong>@item.Nom</strong>
+                                </td>
+                                <td>
+                                    <span class="price-badge">@item.Prix.ToString("C")</span>
+                                </td>
+                                <td>
+                                    <div class="description-cell">
+                                        @(item.Description?.Length > 60 
+                                            ? item.Description.Substring(0, 60) + "..." 
+                                            : item.Description)
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    @if (item.QtStock > 10)
+                                    {
+                                        <span class="badge bg-success">@item.QtStock</span>
+                                    }
+                                    else if (item.QtStock > 0)
+                                    {
+                                        <span class="badge bg-warning text-dark">@item.QtStock</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Rupture</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="category-badge">
+                                        @item.Categorie?.Nom
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        @* <a asp-page="./Details" asp-route-id="@item.ProduitId" 
+                                           class="btn btn-sm btn-info" title="Détails">
+                                            <i class="bi bi-eye"></i>
+                                        </a> *@
+                                        <a asp-page="./Edit" asp-route-id="@item.ProduitId" 
+                                           class="btn btn-sm btn-warning" title="Modifier">
+                                            <i class="bi bi-pencil"></i>Modifier
+                                        </a>
+                                        <a asp-page="./Delete" asp-route-id="@item.ProduitId" 
+                                           class="btn btn-sm btn-danger" title="Supprimer">
+                                            <i class="bi bi-trash"></i>Supprimer
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Produit.Any())
+    {
+        <div class="alert alert-info mt-4 text-center">
+            <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+            <h4>Aucun produit disponible</h4>
+            <p class="mb-3">Commencez par créer votre premier produit</p>
+            <a asp-page="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Créer un produit
+            </a>
+        </div>
+    }
+</div>
+
+
